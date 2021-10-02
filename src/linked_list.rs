@@ -1,12 +1,16 @@
 use std::cmp::PartialOrd;
 use std::fmt::Display;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct LinkedList<T: PartialOrd + Display>(Option<(T, Box<LinkedList<T>>)>);
 
 impl<T: PartialOrd + Display> LinkedList<T> {
     pub fn new() -> Self {
         LinkedList(None)
+    }
+
+    pub fn from(data: T, child: LinkedList<T>) -> Self {
+        Self(Some((data, Box::new(child))))
     }
 
     pub fn push_front(&mut self, data: T) {
@@ -53,6 +57,11 @@ mod linked_list {
         let mut linked_list = LinkedList::new();
         linked_list.push_front(2);
         linked_list.push_back(1);
+
+        assert_eq!(
+            linked_list,
+            LinkedList::from(2, LinkedList::from(1, LinkedList::new(),))
+        );
     }
 
     #[test]
@@ -64,6 +73,18 @@ mod linked_list {
         linked_list.push_back(5);
         linked_list.insert_sorted(3);
 
-        println!("{:?}", linked_list);
+        assert_eq!(
+            linked_list,
+            LinkedList::from(
+                1,
+                LinkedList::from(
+                    2,
+                    LinkedList::from(
+                        3,
+                        LinkedList::from(4, LinkedList::from(5, LinkedList::new()))
+                    )
+                )
+            )
+        );
     }
 }
