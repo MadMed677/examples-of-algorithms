@@ -29,21 +29,12 @@ impl<T: PartialOrd + Display> LinkedList<T> {
         match self.0 {
             Some((ref value, ref mut child)) => {
                 if &data >= value {
-                    println!(
-                        "Found the point. The current value is: {} and the next value is: {}",
-                        &data, value
-                    );
                     child.insert_sorted(data);
                 } else {
-                    println!(
-                        "Didn't find the point. The current value is: {} and the next value is: {}",
-                        &data, value
-                    );
-
                     self.push_front(data);
                 }
             }
-            None => self.push_back(data),
+            None => self.push_front(data),
         }
     }
 }
@@ -71,6 +62,30 @@ mod linked_list {
         linked_list.push_back(4);
         linked_list.push_front(1);
         linked_list.push_back(5);
+        linked_list.insert_sorted(3);
+
+        assert_eq!(
+            linked_list,
+            LinkedList::from(
+                1,
+                LinkedList::from(
+                    2,
+                    LinkedList::from(
+                        3,
+                        LinkedList::from(4, LinkedList::from(5, LinkedList::new()))
+                    )
+                )
+            )
+        );
+    }
+
+    #[test]
+    fn should_insert_all_data_via_insert_sorted() {
+        let mut linked_list = LinkedList::new();
+        linked_list.insert_sorted(2);
+        linked_list.insert_sorted(4);
+        linked_list.insert_sorted(1);
+        linked_list.insert_sorted(5);
         linked_list.insert_sorted(3);
 
         assert_eq!(
