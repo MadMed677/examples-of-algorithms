@@ -1,3 +1,4 @@
+use crate::list::List;
 use std::cell::RefCell;
 use std::rc::{Rc, Weak};
 
@@ -14,15 +15,8 @@ pub struct DoubleLinkedList<T> {
     last: Option<Weak<RefCell<DoubleLinkedNode<T>>>>,
 }
 
-impl<T> DoubleLinkedList<T> {
-    pub fn new() -> Self {
-        Self {
-            first: None,
-            last: None,
-        }
-    }
-
-    pub fn push_front(&mut self, data: T) {
+impl<T> List<T> for DoubleLinkedList<T> {
+    fn push_front(&mut self, data: T) {
         match self.first.take() {
             Some(current_node) => {
                 let new_node = Rc::new(RefCell::new(DoubleLinkedNode {
@@ -49,7 +43,7 @@ impl<T> DoubleLinkedList<T> {
         }
     }
 
-    pub fn push_back(&mut self, data: T) {
+    fn push_back(&mut self, data: T) {
         match self.last.take() {
             Some(current_node) => {
                 let new_node = Rc::new(RefCell::new(DoubleLinkedNode {
@@ -78,9 +72,19 @@ impl<T> DoubleLinkedList<T> {
     }
 }
 
+impl<T> DoubleLinkedList<T> {
+    pub fn new() -> Self {
+        Self {
+            first: None,
+            last: None,
+        }
+    }
+}
+
 #[cfg(test)]
 mod double_linked_list {
-    use crate::double_linked_list::DoubleLinkedList;
+    use crate::doubly_linked_list::DoubleLinkedList;
+    use crate::list::List;
 
     #[test]
     fn should_create_double_linked_list_only_with_push_front() {

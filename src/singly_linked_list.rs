@@ -1,8 +1,23 @@
+use crate::list::List;
 use std::cmp::PartialOrd;
 use std::fmt::Display;
 
 #[derive(Debug, PartialEq)]
-pub struct LinkedList<T: PartialOrd + Display>(Option<(T, Box<LinkedList<T>>)>);
+pub struct LinkedList<T>(Option<(T, Box<LinkedList<T>>)>);
+
+impl<T> List<T> for LinkedList<T> {
+    fn push_front(&mut self, data: T) {
+        let t = self.0.take();
+        self.0 = Some((data, Box::new(LinkedList(t))));
+    }
+
+    fn push_back(&mut self, data: T) {
+        match self.0 {
+            Some((_, ref mut child)) => child.push_back(data),
+            None => self.push_front(data),
+        }
+    }
+}
 
 impl<T: PartialOrd + Display> LinkedList<T> {
     pub fn new() -> Self {
@@ -11,18 +26,6 @@ impl<T: PartialOrd + Display> LinkedList<T> {
 
     pub fn from(data: T, child: LinkedList<T>) -> Self {
         Self(Some((data, Box::new(child))))
-    }
-
-    pub fn push_front(&mut self, data: T) {
-        let t = self.0.take();
-        self.0 = Some((data, Box::new(LinkedList(t))));
-    }
-
-    pub fn push_back(&mut self, data: T) {
-        match self.0 {
-            Some((_, ref mut child)) => child.push_back(data),
-            None => self.push_front(data),
-        }
     }
 
     pub fn insert_sorted(&mut self, data: T) {
@@ -41,7 +44,8 @@ impl<T: PartialOrd + Display> LinkedList<T> {
 
 #[cfg(test)]
 mod linked_list {
-    use crate::linked_list::LinkedList;
+    use crate::list::List;
+    use crate::singly_linked_list::LinkedList;
 
     #[test]
     fn should_create_linked_list() {
