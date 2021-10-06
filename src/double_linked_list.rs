@@ -48,6 +48,34 @@ impl<T> DoubleLinkedList<T> {
             }
         }
     }
+
+    pub fn push_back(&mut self, data: T) {
+        match self.last.take() {
+            Some(current_node) => {
+                let new_node = Rc::new(RefCell::new(DoubleLinkedNode {
+                    data,
+                    prev: Some(Weak::clone(&current_node)),
+                    next: None,
+                }));
+
+                let strong_ref_to_current_node = Weak::upgrade(&current_node).unwrap();
+                let mut mutable_current_node = strong_ref_to_current_node.borrow_mut();
+                self.last = Some(Rc::downgrade(&new_node));
+
+                mutable_current_node.next = Some(new_node);
+            }
+            None => {
+                let new_node = Rc::new(RefCell::new(DoubleLinkedNode {
+                    data,
+                    next: None,
+                    prev: None,
+                }));
+
+                self.last = Some(Rc::downgrade(&new_node));
+                self.first = Some(new_node);
+            }
+        }
+    }
 }
 
 #[cfg(test)]
@@ -55,10 +83,21 @@ mod double_linked_list {
     use crate::double_linked_list::DoubleLinkedList;
 
     #[test]
-    fn should_create_double_linked_list() {
+    fn should_create_double_linked_list_only_with_push_front() {
         let mut double_linked_list = DoubleLinkedList::new();
         double_linked_list.push_front(6);
         double_linked_list.push_front(4);
+
+        println!("{:?}", double_linked_list);
+    }
+
+    #[test]
+    fn should_create_double_linked_list_with_push_front_and_push_back() {
+        let mut double_linked_list = DoubleLinkedList::new();
+        double_linked_list.push_front(2);
+        double_linked_list.push_front(1);
+        double_linked_list.push_back(3);
+        double_linked_list.push_back(4);
 
         println!("{:?}", double_linked_list);
     }
