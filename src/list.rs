@@ -5,9 +5,9 @@
 ///  - [Multiply linked List](https://en.wikipedia.org/wiki/Linked_list#Multiply_linked_list)
 ///  and so on
 pub trait List<T> {
-    /// Command which add the `data` into the **front** of the list
+    /// Adds the given `data` to the **front** of the list
     fn push_front(&mut self, data: T);
 
-    /// Command which add the `data` into the **back** of the list
+    /// Adds the given `data` to the **back** of the list
     fn push_back(&mut self, data: T);
 }
