@@ -1,4 +1,4 @@
-use crate::list::List;
+use crate::list::list_trait::List;
 use std::cmp::PartialOrd;
 use std::fmt::Display;
 
@@ -72,8 +72,8 @@ impl<T: PartialOrd + Display> LinkedList<T> {
 
 #[cfg(test)]
 mod linked_list {
-    use crate::list::List;
-    use crate::singly_linked_list::LinkedList;
+    use crate::list::list_trait::List;
+    use crate::list::singly_linked_list::LinkedList;
 
     #[test]
     fn should_create_linked_list() {

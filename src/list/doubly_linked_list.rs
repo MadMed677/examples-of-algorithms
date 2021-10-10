@@ -1,4 +1,4 @@
-use crate::list::List;
+use crate::list::list_trait::List;
 use std::cell::RefCell;
 use std::rc::{Rc, Weak};
 
@@ -83,8 +83,8 @@ impl<T> DoubleLinkedList<T> {
 
 #[cfg(test)]
 mod double_linked_list {
-    use crate::doubly_linked_list::DoubleLinkedList;
-    use crate::list::List;
+    use crate::list::doubly_linked_list::DoubleLinkedList;
+    use crate::list::list_trait::List;
 
     #[test]
     fn should_create_double_linked_list_only_with_push_front() {
