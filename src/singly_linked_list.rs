@@ -19,6 +19,34 @@ impl<T> List<T> for LinkedList<T> {
     }
 }
 
+pub struct LinkedListIter<'a, T> {
+    node: &'a LinkedList<T>,
+}
+
+impl<'a, T> Iterator for LinkedListIter<'a, T> {
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.node.0 {
+            Some((ref value, ref child_node)) => {
+                self.node = child_node;
+
+                Some(value)
+            }
+            None => None,
+        }
+    }
+}
+
+impl<'a, T> IntoIterator for &'a LinkedList<T> {
+    type Item = &'a T;
+    type IntoIter = LinkedListIter<'a, T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        LinkedListIter { node: self }
+    }
+}
+
 impl<T: PartialOrd + Display> LinkedList<T> {
     pub fn new() -> Self {
         LinkedList(None)
@@ -105,5 +133,21 @@ mod linked_list {
                 )
             )
         );
+    }
+
+    #[test]
+    fn should_iterate_through_list() {
+        let mut linked_list = LinkedList::new();
+        linked_list.push_front(5);
+        linked_list.push_front(4);
+        linked_list.push_front(2);
+        linked_list.push_front(1);
+
+        let mut result = vec![];
+        for item in &linked_list {
+            result.push(*item);
+        }
+
+        assert_eq!(result, vec![1, 2, 4, 5]);
     }
 }
